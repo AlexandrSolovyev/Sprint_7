@@ -1,8 +1,12 @@
+import json
+
 import allure
 import pytest
+import requests
+
 from data import Data
 from http import HTTPStatus
-from helpers import get_body_request, get_response_post_order
+from helpers import get_body_request
 
 
 @pytest.mark.get_url('create_order')
@@ -23,8 +27,10 @@ class TestCreateOrder:
         order_lst = [firstname, lastname, address, metro_station,
                      phone, rent_time, delivery_date, comment, color]
         payload = get_body_request(order_lst)
-        response = get_response_post_order(get_url, payload)
+        response = requests.post(get_url, payload)
         assert response.status_code == HTTPStatus.CREATED
+        response_data = json.loads(response.text)
+        assert 'track' in response_data
 
     @allure.title('Проверка ответа при успешном заказе самоката')
     @pytest.mark.parametrize(
@@ -38,5 +44,5 @@ class TestCreateOrder:
         order_lst = [firstname, lastname, address, metro_station,
                      phone, rent_time, delivery_date, comment, color]
         payload = get_body_request(order_lst)
-        response = get_response_post_order(get_url, payload)
+        response = requests.post(get_url, payload)
         assert 'track' in response.json()

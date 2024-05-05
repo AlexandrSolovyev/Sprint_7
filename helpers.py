@@ -14,6 +14,7 @@ def get_data_for_create_courier():
         letters = string.ascii_lowercase
         random_string = ''.join(random.choice(letters) for i in range(length))
         return random_string
+
     login = generate_random_string(6)
     password = generate_random_string(10)
     first_name = generate_random_string(10)
@@ -28,28 +29,10 @@ def get_data_for_create_courier():
 @allure.step('Формирование тела запроса для создания курьера и возвращения логина и пароля')
 def register_new_courier_and_return_login_password(get_new_data):
     payload = get_new_data
-    courier_create_url = post_api_courier_route()
+    courier_create_url = f'{Urls.MAIN_URL}{Urls.ENDPOINT_COURIER_CREATE}'
     response = requests.post(url=courier_create_url, data=payload)
     if response.status_code == 201:
         return payload
-
-
-@allure.step('Формирование URL')
-def post_api_courier_route():
-    url = f'{Urls.MAIN_URL}{Urls.ENDPOINT_COURIER_CREATE}'
-    return url
-
-
-@allure.step('Формирование URL')
-def get_api_courier_route():
-    url = f'{Urls.MAIN_URL}{Urls.ENDPOINT_COURIER_LOGIN}'
-    return url
-
-
-@allure.step('Формирование URL')
-def get_post_api_order_route():
-    url = f'{Urls.MAIN_URL}{Urls.ENDPOINT_ORDERS_CREATE_GET_LIST}'
-    return url
 
 
 @allure.step('Формирование тела запроса'
@@ -98,37 +81,12 @@ def get_data_without_one_required_field(payload, current_data):
 
 @allure.step('Удаление курьера')
 def delete_courier(payload):
-    # url = APICourier()
     if 'firstName' in payload:
         payload.pop('firstName')
-    response = requests.post(url=get_api_courier_route(), data=payload)
+    response = requests.post(url=f'{Urls.MAIN_URL}{Urls.ENDPOINT_COURIER_LOGIN}', data=payload)
     if 'id' in response.json():
         courier_id = response.json()['id']
-        requests.delete(url=f'{post_api_courier_route()}/{courier_id}')
-
-
-@allure.step('Получить ответа от GET-запроса')
-def get_response_get_courier(get_url, payload):
-    response = requests.post(get_url, payload)
-    return response
-
-
-@allure.step('Получучение ответа от POST-запроса')
-def get_response_post_courier(get_url, payload):
-    response = requests.post(url=get_url, data=payload)
-    return response
-
-
-@allure.step('Получение ответа от POST-запроса')
-def get_response_post_order(get_url, payload):
-    response = requests.post(get_url, payload)
-    return response
-
-
-@allure.step('Получение ответа от GET-запроса')
-def get_response_get_order(get_url):
-    response = requests.get(get_url)
-    return response
+        requests.delete(url=f'{Urls.MAIN_URL}{Urls.ENDPOINT_COURIER_CREATE}/{courier_id}')
 
 
 @allure.step('Получение тела запроса')
@@ -150,7 +108,7 @@ def get_body_request(order_lst):
 
 @allure.step('Отмена заказа')
 def cancel_order(payload):
-    response = requests.post(url=get_post_api_order_route(), data=payload)
+    response = requests.post(url=f'{Urls.MAIN_URL}{Urls.ENDPOINT_ORDERS_CREATE_GET_LIST}', data=payload)
     if 'track' in response.json():
         order_track = response.json()['track']
         payload = {

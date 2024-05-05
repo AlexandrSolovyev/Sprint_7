@@ -1,1 +1,0 @@
-{"uuid": "f66e1e7f-1316-4dc8-9f66-04cf2e68851d", "children": ["90396f3a-6e5b-4cc0-8676-e34efb7b8505"], "befores": [{"name": "get_url", "status": "passed", "steps": [{"name": "Формирование URL", "status": "passed", "start": 1714678351308, "stop": 1714678351308}], "start": 1714678351308, "stop": 1714678351308}], "start": 1714678351308, "stop": 1714678351439}
